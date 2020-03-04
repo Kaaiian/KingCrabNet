@@ -1,5 +1,7 @@
 import os
 
+import numpy as np
+
 import warnings
 warnings.filterwarnings('ignore',
                         message='PyTorch is not compiled with NCCL support')
@@ -210,9 +212,11 @@ if __name__ == '__main__':
     #        Your trained model weights will be saved in
     #       'data/user_properties/trained_weights'
     # =========================================================================
-    train_crabnet(model_name='cgcnn_pcd_shear',
-                  csv_train='cgcnn_predictions/ael_shear_modulus_vrh_training_for_crab.csv',
-                  val_frac=0.05)
+    file_train = 'agl_log10_thermal_conductivity_300K_training_for_crab.csv'
+    train_crabnet(model_name='cgcnn_pcd_therm_cond',
+                   # csv_train='cgcnn_predictions/normalized_ael_bulk_modulus_vrh_full_aflow_train.csv',
+                   csv_train=f'cgcnn_predictions/{file_train}',
+                   val_frac=0.05)
 
 
 # %%
@@ -229,12 +233,18 @@ if __name__ == '__main__':
     # print out all saved models to console
     list_saved_models()
 
+    file_pred = 'normalized_agl_log10_thermal_conductivity_300K_test.csv'
+    csv_pred = f'normalized_test_files/{file_pred}'
     # get prediction for model of choice.
-    prediction = predict_crabnet(model_name='cgcnn_pcd_shear',
-                                 csv_pred='normalized_test_files/normalized_ael_shear_modulus_vrh_test.csv')
+    prediction = predict_crabnet(model_name='cgcnn_pcd_therm_cond',
+                                 csv_pred=csv_pred)
 
     # predicted values are returned here.
     input_values, predicted_values, formulae = prediction
+
+    if 'log10' in csv_pred:
+        input_values = 10**np.array(input_values)
+        predicted_values = 10**np.array(predicted_values)
 
     r2 = r2_score(input_values, predicted_values)
     mae = mean_absolute_error(input_values, predicted_values)
