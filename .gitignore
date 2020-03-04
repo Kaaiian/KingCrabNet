@@ -1,3 +1,14 @@
+# Additional data directories and saved numpy arrays
+data/score_summaries/Classics/*
+data/score_summaries/NN/*
+!data/score_summaries/Classics/Run_publication
+!data/score_summaries/NN/Run_publication
+
+*.npz
+
+# Pylint code analysis stuff
+.pylint.d/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
